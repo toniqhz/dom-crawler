@@ -30,8 +30,8 @@ const getAllProductFromCat = async (path) => {
     const url = host + path + "&page=" + page
     console.log("============= fetch category ", url)
     const categoryPage = await fetcher.getPageSource(url)
-    const rows = await dissectorVG.getListProduct(categoryPage)
-    await Utils.saveExcel('Vat Gia', './files/vat_gia.xlsx', this.vatGiaSheetColumns, rows)
+    const rows = await dissectorVG.getListProduct('vat_gia', categoryPage)
+    await Utils.saveExcel('Vat Gia', 'vat_gia', this.vatGiaSheetColumns, rows)
     page = page + 1
   }
 

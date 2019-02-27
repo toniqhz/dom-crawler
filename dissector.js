@@ -13,10 +13,15 @@ class dissector {
     // this.vatGiaSheet = this.workbook.addWorksheet('Vat Gia');
   }
 
-  async getListProduct(pageSource){
+  async getListProduct(imgFolderName, pageSource){
     const $ = cheerio.load(pageSource)
 
     const rows = []
+    const imagePath = `./files/products/${imgFolderName}/`
+    if(!fs.existsSync(imagePath)){
+      await fs.mkdirSync(imagePath);
+    }
+    
     $('.product_table_list .list').map(async (i, el) => {
       // console.log("++++++++++++++= el", el)
       // const product = $(this)
@@ -28,7 +33,7 @@ class dissector {
       const productPrice = $('.price', '.product_price', el).text()
       // console.log("--------", productName, productPictrure, productDetail, productPrice)
 
-      const picturePath = `./files/products/${productId}.png`
+      const picturePath = imagePath + `${productId}.png`
 
       rows.push({
         id: productId,

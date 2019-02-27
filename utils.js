@@ -32,9 +32,11 @@ module.exports = {
   },
 
 
-  saveExcel: async (sheetName, path, columns, rows) => {
+  saveExcel: async (sheetName, fileName, columns, rows) => {
     const workbook = new Excel.Workbook();
     let worksheet
+
+    const path = `./files/${fileName}.xlsx`
     if(fs.existsSync(path) && UPDATE_MODE){
       // update to exist file
       await workbook.xlsx.readFile(path)
