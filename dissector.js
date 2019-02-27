@@ -6,39 +6,11 @@ const fs = require('fs')
 const Ultils = require('./utils')
 const Url = require('url');
 
-const UPDATE_MODE = true
-
 class dissector {
   constructor(){
     // this.workbook = new Excel.Workbook();
 
     // this.vatGiaSheet = this.workbook.addWorksheet('Vat Gia');
-    this.vatGiaSheetColumns = [
-      { header: 'Category', key: 'category', width: 10 },
-      { header: 'Id', key: 'id', width: 10 },
-      { header: 'Product Name', key: 'name', width: 32 },
-      { header: 'Picture Url', key: 'pictureUrl', width: 30},
-      { header: 'Picture', key: 'picture', width: 30},
-      { header: 'Detail', key: 'detail', width: 60},
-      { header: 'Price', key: 'price', width: 10},
-  ];
-  }
-
-  async saveExcel(sheetName, path, columns, rows){
-    const workbook = new Excel.Workbook();
-    let worksheet
-    if(fs.existsSync(path) && UPDATE_MODE){
-      // update to exist file
-      await workbook.xlsx.readFile(path)
-      worksheet = workbook.getWorksheet(sheetName)
-    } else {
-      //create new file 
-      worksheet = workbook.addWorksheet(sheetName);
-    }
-
-    worksheet.columns = columns
-    worksheet.addRows(rows)
-    await workbook.xlsx.writeFile(path)
   }
 
   async getListProduct(pageSource){
@@ -74,16 +46,9 @@ class dissector {
     })
 
     // console.log("++++++++++++", rows)
-
-    this.saveExcel('Vat Gia', './files/vat_gia.xlsx', this.vatGiaSheetColumns, rows)
-    // this.vatGiaSheet.addRows(rows)
-
-
-    // this.workbook.xlsx.writeFile('./files/vat_gia.xlsx')
-    // .then(function() {
-    //     // done
-    //     console.log("DONE")
-    // });
+    return rows
+    // this.saveExcel('Vat Gia', './files/vat_gia.xlsx', this.vatGiaSheetColumns, rows)
+  
   }
 
 

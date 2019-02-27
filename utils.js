@@ -1,6 +1,8 @@
 const fs = require('fs')
+const Excel = require('exceljs')
 
 
+const UPDATE_MODE = true
 
 module.exports = {
   writeFilePromise: (path, data, fileEncoding) => {
@@ -27,5 +29,23 @@ module.exports = {
   paramQuery: (data) =>  {
     const formEncodeURIComponent = uri => encodeURIComponent(uri).replace(/%20/g, '+');
     return Object.keys(data).sort().map(k => `${formEncodeURIComponent(k)}=${formEncodeURIComponent(data[k])}`).join('&');
+  },
+
+
+  saveExcel: async (sheetName, path, columns, rows) => {
+    const workbook = new Excel.Workbook();
+    let worksheet
+    if(fs.existsSync(path) && UPDATE_MODE){
+      // update to exist file
+      await workbook.xlsx.readFile(path)
+      worksheet = workbook.getWorksheet(sheetName)
+    } else {
+      //create new file 
+      worksheet = workbook.addWorksheet(sheetName);
+    }
+
+    worksheet.columns = columns
+    worksheet.addRows(rows)
+    await workbook.xlsx.writeFile(path)
   }
 }

@@ -1,9 +1,20 @@
 const Fetcher = require('./fetcher')
 const Dissector = require('./dissector')
-
+const Utils = require('./utils')
 const fetcher = new Fetcher()
 const host = 'https://www.vatgia.com/'
 const shopName = 'codiendika'
+
+this.vatGiaSheetColumns = [
+  { header: 'Category', key: 'category', width: 10 },
+  { header: 'Id', key: 'id', width: 10 },
+  { header: 'Product Name', key: 'name', width: 32 },
+  { header: 'Picture Url', key: 'pictureUrl', width: 30},
+  { header: 'Picture', key: 'picture', width: 30},
+  { header: 'Detail', key: 'detail', width: 60},
+  { header: 'Price', key: 'price', width: 10},
+];
+
 
 const getAllProductFromCat = async (path) => {
   let page = 0
@@ -19,8 +30,8 @@ const getAllProductFromCat = async (path) => {
     const url = host + path + "&page=" + page
     console.log("============= fetch category ", url)
     const categoryPage = await fetcher.getPageSource(url)
-    await dissectorVG.getListProduct(categoryPage)
-
+    const rows = await dissectorVG.getListProduct(categoryPage)
+    await Utils.saveExcel('Vat Gia', './files/vat_gia.xlsx', this.vatGiaSheetColumns, rows)
     page = page + 1
   }
 
