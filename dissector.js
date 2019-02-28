@@ -13,7 +13,7 @@ class dissector {
     // this.vatGiaSheet = this.workbook.addWorksheet('Vat Gia');
   }
 
-  async getListProduct(imgFolderName, pageSource){
+  async getListProduct(imgFolderName, pageSource, catObj){
     const $ = cheerio.load(pageSource)
 
     const rows = []
@@ -35,11 +35,15 @@ class dissector {
 
       const picturePath = imagePath + `${productId}.png`
 
+      const wpFilepath = `/wp-content/uploads/${imgFolderName}/${productId}.png`
+
       rows.push({
         id: productId,
         name: productName,
+        catId: catObj.id,
+        catName: catObj.name,
         pictureUrl: productPictureUrl,
-        picture: picturePath,
+        picture: wpFilepath,
         detail: productDetail,
         price: productPrice
       })

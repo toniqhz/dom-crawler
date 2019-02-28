@@ -9,6 +9,8 @@ this.vatGiaSheetColumns = [
   { header: 'Category', key: 'category', width: 10 },
   { header: 'Id', key: 'id', width: 10 },
   { header: 'Product Name', key: 'name', width: 32 },
+  { header: 'Category Id', key: 'catId', width: 10 },
+  { header: 'Category Name', key: 'catName', width: 32 },
   { header: 'Picture Url', key: 'pictureUrl', width: 30},
   { header: 'Picture', key: 'picture', width: 30},
   { header: 'Detail', key: 'detail', width: 60},
@@ -16,10 +18,10 @@ this.vatGiaSheetColumns = [
 ];
 
 
-const getAllProductFromCat = async (path) => {
+const getAllProductFromCat = async (catObj) => {
   let page = 0
   const dissectorVG = new Dissector() 
-  const firstUrl = host + path
+  const firstUrl = host + catObj.url
   const firstPage = await fetcher.getPageSource(firstUrl)
   const maxPage = await dissectorVG.getMaxPageNumber(firstPage)
   console.log("----------- maxPage", maxPage)
@@ -27,10 +29,10 @@ const getAllProductFromCat = async (path) => {
 
   
   while(page <= maxPage){
-    const url = host + path + "&page=" + page
+    const url = host + catObj.url + "&page=" + page
     console.log("============= fetch category ", url)
     const categoryPage = await fetcher.getPageSource(url)
-    const rows = await dissectorVG.getListProduct('vat_gia', categoryPage)
+    const rows = await dissectorVG.getListProduct('vat_gia', categoryPage, catObj)
     await Utils.saveExcel('Vat Gia', 'vat_gia', this.vatGiaSheetColumns, rows)
     page = page + 1
   }
@@ -48,8 +50,11 @@ const exec = async () => {
   const cats = await dissectorVG.getListCategories(pageSource)
 
 
-  getAllProductFromCat("codiendika&module=product&view=listudv&record_id=14881")
+  for (const cat of cats) {
+    await getAllProductFromCat(cat)
+  }
 
+  console.log("============ ALL DONE")
 
 
 }
