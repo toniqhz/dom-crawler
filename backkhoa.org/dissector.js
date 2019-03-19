@@ -3,7 +3,7 @@ const cheerio = require('cheerio')
 const Excel = require('exceljs')
 const fetch = require('node-fetch');
 const fs = require('fs')
-const Ultils = require('./utils')
+const Ultils = require('../utils')
 const Url = require('url');
 
 class dissector {
@@ -11,6 +11,40 @@ class dissector {
     // this.workbook = new Excel.Workbook();
 
     // this.vatGiaSheet = this.workbook.addWorksheet('Vat Gia');
+  }
+
+  async getProductDetail(imgFolderName, pageSource, catObj){
+    const $ = cheerio.load(pageSource, {
+      decodeEntities: false
+    })
+
+    const rows = []
+    const imagePath = `../files/products/${imgFolderName}/`
+    if(!fs.existsSync(imagePath)){
+      await fs.mkdirSync(imagePath);
+    }
+
+    const productId = $('.product', '.site-main').attr('id')
+    const productName = $('.product_title', '.site-main').text()
+    const productPictrure = $('img', '.woocommerce-main-image', '.site-main').attr('src')
+    const productPictureUrl = productPictrure
+    const sortDescription = unescape($('.woocommerce-product-details__short-description', '.site-main').html())
+    const productDetail = unescape($('.woocommerce-Tabs-panel--description', '.site-main').html())
+    const productPrice = null
+
+    rows.push({
+      id: productId,
+      name: productName,
+      catId: catObj.id,
+      catName: catObj.cat,
+      pictureUrl: productPictureUrl,
+      picture: productPictrure,
+      shortDetail: sortDescription,
+      detail: productDetail,
+      price: null
+    })
+
+    return rows
   }
 
   async getListProduct(imgFolderName, pageSource, catObj){

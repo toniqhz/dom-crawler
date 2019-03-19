@@ -36,7 +36,7 @@ module.exports = {
     const workbook = new Excel.Workbook();
     let worksheet
 
-    const path = `./files/${fileName}.xlsx`
+    const path = `../files/${fileName}.xlsx`
     if(fs.existsSync(path) && UPDATE_MODE){
       // update to exist file
       await workbook.xlsx.readFile(path)
@@ -84,5 +84,21 @@ module.exports = {
         }
         console.log("csv file was saved in the current directory!");
     });
-  }
+  },
+
+  async asyncForEach(array, callback) {
+    for (let index = 0; index < array.length; index++) {
+      await callback(array[index], index, array);
+    }
+  },
+
+  escapeHtml: (unsafe) => {
+    if(!unsafe) return ''
+    return unsafe
+         .replace(/&/g, "&amp;")
+         .replace(/</g, "&lt;")
+         .replace(/>/g, "&gt;")
+         .replace(/"/g, "&quot;")
+         .replace(/'/g, "&#039;");
+ }
 }
