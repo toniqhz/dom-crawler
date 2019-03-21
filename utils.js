@@ -2,6 +2,7 @@ const fs = require('fs')
 const Excel = require('exceljs')
 const iconv = require('iconv-lite');
 var xlsx = require('node-xlsx');
+const util = require('util')
 const UPDATE_MODE = true
 
 module.exports = {
@@ -63,16 +64,27 @@ module.exports = {
         var sheet = obj[i];
         //loop through all rows in the sheet
         for(var j = 0; j < sheet['data'].length; j++)
-        {
+        { 
+                const escapedSheet = sheet['data'][j].map(c => {
+                  let newC = c
+                  newC = newC.replace(/"/g, '""');
+                  newC = newC.replace(/,/g, '\,');
+                  newC = newC.replace(/'/g, '\'');
+
+                  // console.log(newC)
+                  newC = '\"' + newC + '\"'
+                  return newC
+                })
+
                 //add the row to the rows array
-                rows.push(sheet['data'][j]);
+                rows.push(escapedSheet);
         }
     }
 
     //creates the csv string to write it to a file
     for(var i = 0; i < rows.length; i++)
     {
-        writeStr += rows[i].join(",") + "\n";
+      writeStr += rows[i].join(",") + "\n";
     }
 
     //writes to a file, but you will presumably send the csv as a      
@@ -100,5 +112,9 @@ module.exports = {
          .replace(/>/g, "&gt;")
          .replace(/"/g, "&quot;")
          .replace(/'/g, "&#039;");
+ },
+
+ logDeep: (obj) => {
+  return util.inspect(obj, {showHidden: false, depth: null})
  }
 }

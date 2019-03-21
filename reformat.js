@@ -1,4 +1,4 @@
 const Utils = require('./utils')
 
 
-Utils.reformatCSV('back_khoa')
+Utils.reformatCSV('thiet_bi_ky_thuat')

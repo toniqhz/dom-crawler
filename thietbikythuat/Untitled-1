@@ -1,0 +1,17 @@
+cats
+[
+  {
+    name: "",
+    url: "",
+    thumb: ""
+    childs: [
+      {
+        name: "",
+        url: "",
+        products: [
+          {...}
+        ]
+      }
+    ]
+  }
+]
