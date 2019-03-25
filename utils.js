@@ -3,6 +3,13 @@ const Excel = require('exceljs')
 const iconv = require('iconv-lite');
 var xlsx = require('node-xlsx');
 const util = require('util')
+const Fetcher = require('./fetcher')
+const fetcher = new Fetcher()
+
+const _ =  require('underscore')
+const xss = require('xss')
+const cheerio = require('cheerio')
+
 const UPDATE_MODE = true
 
 module.exports = {
@@ -116,5 +123,90 @@ module.exports = {
 
  logDeep: (obj) => {
   return util.inspect(obj, {showHidden: false, depth: null})
- }
+ },
+
+ standardizeHtml: (body) => {
+  let realBody = _.unescape(body);
+  let sanitizedBody = xss(realBody, {
+    whiteList: {
+      img: ['src', 'alt', 'width', 'height'],
+      // div: [],
+      // // a: ['class', 'href', 'fragment'],
+      // b: [],
+      p: [],
+      // strong: [],
+      // h1: [],
+      // h2: [],
+      // h3: [],
+      // h4: [],
+      // h5: []
+    }, 
+    escapeHtml(html) {
+      return html
+        .replace(/&#39;/g, '\'')
+        .replace(/&lt;/g, '<')
+        .replace(/&gt;/g, '>')
+        .replace(/&amp;/g, '&')
+        .replace(/\u2028/g, '')
+        .replace(/\u2029/g, '')
+
+
+        // .replace('Nguyễn Minh Hoà', 'Tuan Nguyen')
+        // .replace('hoa.nguyen@huphaco.vn', 'edwardevans094@gmail.com')
+        // .replace('0978 79 55 66', '033 507 9666')
+        // .replace('thietbikythuat.com.vn', 'sensena.net')
+
+    },
+    // stripIgnoreTagBody: ['script', 'style', 'meta', 'header', 'section'],
+    onIgnoreTag: (tag, html, options) => {
+      // if (tag === "img" ) {
+      //   const $ = cheerio.load(html, {
+      //     decodeEntities: false
+      //   })
+      //   const imageUrl = $('img').attr('src')
+      //   // //todo download this image to local and change src
+      //   const urlPath = imageUrl.split('/')
+      //   const imgName = urlPath[urlPath.length - 1]
+      //   const picPath = "/wp-content/uploads/custom/" + imgName
+        
+      //   fetcher.asyncFetchImg(imageUrl, 'custom/' + imgName)
+      //   // return `<img src="${picPath}"/>`
+      //   // console.log(typeof html, html)
+        
+      //   return $.html($('img').attr('src', picPath))
+      // }
+
+      if(tag == 'a'){
+        const $ = cheerio.load(html, {
+          decodeEntities: false
+        })
+        const href = $('a').attr('href')
+        if(href && href[0] !== '#') return ''
+      }
+
+      
+      // Return nothing, means keep the default handling measure
+    },
+    // onTag(tag, html, options) {
+    //   if(tag == 'p'){
+    //     const lowercaseHtml = value ?  value.toLowerCase() : ''
+    //     console.log("____________", lowercaseHtml)
+    //     if(lowercaseHtml.includes('nguyễn minh hoà') || lowercaseHtml.includes('mobi :') || lowercaseHtml.includes('web :') || lowercaseHtml.includes('mail :')) return ''
+    //   }
+    // }
+  });
+  let brTrailling = '<div><br></div>';
+  
+  while (sanitizedBody.endsWith(brTrailling)) {
+
+    sanitizedBody = sanitizedBody.substring(0, sanitizedBody.length - brTrailling.length).trim();
+  }
+
+  return sanitizedBody;
+},
+
+
+
+
+
 }

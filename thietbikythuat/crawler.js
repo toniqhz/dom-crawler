@@ -6,6 +6,7 @@ const host = 'https://www.vatgia.com/'
 const shopName = 'codiendika'
 
 this.vatTBKTColumns = [
+  { header: 'Code', key: 'code', width: 10 },
   { header: 'Category', key: 'category', width: 10 },
   { header: 'Id', key: 'id', width: 10 },
   { header: 'Product Name', key: 'name', width: 32 },

@@ -1,4 +1,6 @@
 const axios = require('axios')
+const fetch = require('node-fetch');
+const fs = require('fs')
 
 class fetcher {
   constructor(){}
@@ -10,6 +12,12 @@ class fetcher {
     } catch (error) {
       console.log(error)
     }
+  }
+
+  async asyncFetchImg (url, savedPath) {
+    const res = await fetch(url)
+    const dest = fs.createWriteStream(savedPath);
+    res.body.pipe(dest)
   }
 
 }

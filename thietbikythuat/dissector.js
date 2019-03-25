@@ -8,6 +8,7 @@ const Url = require('url');
 const Fetcher = require('../fetcher')
 const fetcher = new Fetcher()
 
+
 class dissector {
   constructor(){
     // this.workbook = new Excel.Workbook();
@@ -75,7 +76,11 @@ class dissector {
     const productPictrure = $('img', '.woocommerce-main-image', '.site-main').attr('src')
     const productPictureUrl = productPictrure
     const sortDescription = unescape($('.woocommerce-product-details__short-description', '.site-main').html())
-    const productDetail = unescape($('.woocommerce-Tabs-panel--description', '.site-main').html())
+
+
+    $('.box-feather').remove()
+
+    const productDetail = unescape($('#sub_content .c', '.site-main').html())
     const productPrice = null
 
     rows.push({
@@ -105,33 +110,44 @@ class dissector {
     }
 
 
-    await Utils.asyncForEach($('#sub_content ul').children(),async el => {
+    await Utils.asyncForEach($('#sub_content ul').children(), async el => {
       const productName = $('a', '.entry-title', el).text()
       const productUrl = $('a', '.entry-title', el).attr('href')
-      const urlPath = productUrl.split('/')
-      const productId = urlPath[urlPath.length - 2]
-      const productPictrure = $('img', '.post-thumbnail', el).attr('src')
+      
+      
 
-      const productPage = await fetcher.getPageSource(productUrl)
-
-
-      const c$ = cheerio.load(productPage, {
-        decodeEntities: false
-      })
-
-      const shortDetail = c$('header strong', '#sub_content').text()
-      const fullDetail = unescape(c$('.c', '#sub_content').html())
-      // const productPictureUrl = new RegExp("(?<=\').+?(?=\')", "g").exec(productPictrure)[0];
-      // const productDetail = $('.product_teaser', el).text()
-      // const productPrice = $('.price', '.product_price', el).text()
-      // console.log("--------", productName, productPictrure, productDetail, productPrice)
-
-      // const picturePath = imagePath + `${productId}.png`
-
-      // const wpFilepath = `${imgFolderName}\/${productId}.png`
       if(productName){
+        const urlPath = productUrl.split('/')
+        const productCode = urlPath[urlPath.length - 2]
+        const productPictrure = $('img', '.post-thumbnail', el).attr('src')
+        const productPage = await fetcher.getPageSource(productUrl)
+
+
+        const c$ = cheerio.load(productPage, {
+          decodeEntities: false
+        })
+
+        const shortDetail = c$('header strong', '#sub_content').text()
+
+        c$('.box-feather').remove()
+        c$('.fb-comments').remove()
+
+        c$('p').map( function (i, el){
+          let elText = c$(this).text() || " "
+          let lowEText = elText.toLowerCase().replace(/\s/g, '');
+          if(lowEText.includes('kỹsưcơđiệntử') || lowEText.includes('nguyễnminhhoà') || lowEText.includes('mobi:') || 
+          lowEText.includes('mail:') || lowEText.includes('web:') || lowEText.includes('kỹsưcơ–điệntử') || lowEText.includes('cambiendoapsuat.vn') || lowEText.includes('nguyễnminhhòa')
+          || lowEText.includes('0937') || lowEText.includes('vntech@') || lowEText.includes('thietbikythuat') || lowEText.includes('tnhhtmdv') || lowEText.includes('q.2,hcm') 
+          || lowEText.includes('Co., Ltd') || lowEText.includes('dist.10,hcmc')
+        ){
+            c$(this).remove()
+          }
+        })
+
+        const fullDetail = Utils.standardizeHtml(c$('.c', '#sub_content').html())
+
         rows.push({
-          id: productId,
+          code: productCode,
           name: productName,
           url: productUrl,
           // catId: catObj.id,
