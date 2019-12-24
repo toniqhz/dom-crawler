@@ -22,6 +22,20 @@ module.exports = {
     });
   },
 
+  chunkArray: (myArray, chunk_size) => {
+    var index = 0;
+    var arrayLength = myArray.length;
+    var tempArray = [];
+    
+    for (index = 0; index < arrayLength; index += chunk_size) {
+        myChunk = myArray.slice(index, index+chunk_size);
+        // Do something if you want with the group
+        tempArray.push(myChunk);
+    }
+
+    return tempArray;
+},
+
   extractURlQuery: (query) => {
     return query
       ? (/^[?#]/.test(query) ? query.slice(1) : query)
@@ -74,9 +88,12 @@ module.exports = {
         { 
                 const escapedSheet = sheet['data'][j].map(c => {
                   let newC = c
-                  newC = newC.replace(/"/g, '""');
-                  newC = newC.replace(/,/g, '\,');
-                  newC = newC.replace(/'/g, '\'');
+                  if(newC && typeof newC !== 'number'){
+                    newC = newC.replace(/"/g, '""');
+                    newC = newC.replace(/,/g, '\,');
+                    newC = newC.replace(/'/g, '\'');
+                  }
+                  
 
                   // console.log(newC)
                   newC = '\"' + newC + '\"'
