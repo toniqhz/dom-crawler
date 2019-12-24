@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "axios": "^0.18.0",
+    "axios": "^0.18.1",
     "cheerio": "^1.0.0-rc.2",
     "dynamic-watermark": "^1.0.0",
     "exceljs": "^1.7.0",
