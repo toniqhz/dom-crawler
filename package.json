@@ -11,7 +11,7 @@
     "node-fetch": "^2.3.0",
     "node-xlsx": "^0.14.1",
     "p-limit": "^2.2.1",
-    "sanitize-html": "^1.20.1",
+    "sanitize-html": "^2.3.2",
     "underscore": "^1.9.1",
     "xss": "^1.0.6"
   }
