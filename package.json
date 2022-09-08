@@ -3,7 +3,7 @@
     "axios": "^0.18.0",
     "cheerio": "^1.0.0-rc.2",
     "dynamic-watermark": "^1.0.0",
-    "exceljs": "^1.7.0",
+    "exceljs": "^1.15.0",
     "iconv-lite": "^0.4.24",
     "image-size": "^0.7.4",
     "image-watermark": "0.0.7",
